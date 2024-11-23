@@ -6,13 +6,15 @@ from bs4 import BeautifulSoup, element
 
 import sqlite3
 
+CODE_IN_DB = False
+
 # Initialize the Selenium WebDriver (e.g., for Chrome)
 options = webdriver.ChromeOptions()
 options.headless = True  # Run in headless mode if you don't want a visible browser window
 driver = webdriver.Chrome(options=options)
 
 with sqlite3.connect('problems.db') as conn:
-    cursor = conn.cursor()  
+    cursor = conn.cursor()
     cursor.execute('SELECT * from problems')
     problem_list = cursor.fetchall()
 
@@ -20,7 +22,7 @@ conn = sqlite3.connect('solutions.db')
 cursor = conn.cursor()
 
 # Create a table
-cursor.execute('''
+create_table = '''
 CREATE TABLE IF NOT EXISTS solutions (
     srno INT,
     prob_srno INT,
@@ -30,7 +32,16 @@ CREATE TABLE IF NOT EXISTS solutions (
     code_length TEXT,
     code TEXT
 )
-''')
+''' if CODE_IN_DB else ''' CREATE TABLE IF NOT EXISTS solutions (
+    srno INT,
+    prob_srno INT,
+    coder_href TEXT,
+    rel_href TEXT,
+    code_language TEXT,
+    code_length TEXT
+)
+'''
+cursor.execute()
 
 URL = {
     'leetcode': f'https://leetcode.com',
@@ -76,7 +87,16 @@ for prob in problem_list[:]:
             solu_code = solu_code.text
         except: continue
         else:
-            cursor.execute('INSERT INTO solutions (srno, prob_srno, coder_href, rel_href, code_language, code_length, code) VALUES (?, ?, ?, ?, ?, ?, ?)', (solu_srno, prob_srno, prob_href, coder_href, solu_href, solu_code_language, solu_code))
+            if CODE_IN_DB: cursor.execute('INSERT INTO solutions \
+                                  (srno, prob_srno, coder_href, rel_href, code_language, code_length, code) \
+                                  VALUES (?, ?, ?, ?, ?, ?, ?)',
+                                  (solu_srno, prob_srno, prob_href, coder_href, solu_href, solu_code_language, solu_code)
+                                  )
+            else: cursor.execute('INSERT INTO solutions \
+                                  (srno, prob_srno, coder_href, rel_href, code_language, code_length) \
+                                  VALUES (?, ?, ?, ?, ?, ?)',
+                                  (solu_srno, prob_srno, prob_href, coder_href, solu_href, solu_code_language)
+                                  )
             conn.commit()
 
             solu_srno += 1
