@@ -81,6 +81,7 @@ for i in range(1, 69):
         prob_href = prob_href.lower()
 
         cursor.execute('INSERT INTO problems (srno, title, rel_href) VALUES (?, ?, ?)', (prob_no, prob_name, prob_href))
+    conn.commit()
 
-conn.commit()
+
 conn.close()
