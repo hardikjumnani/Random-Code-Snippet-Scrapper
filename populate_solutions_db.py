@@ -41,7 +41,7 @@ CREATE TABLE IF NOT EXISTS solutions (
     code_length TEXT
 )
 '''
-cursor.execute()
+cursor.execute(create_table)
 
 URL = {
     'leetcode': f'https://leetcode.com',
