@@ -6,7 +6,7 @@ from bs4 import BeautifulSoup, element
 
 import sqlite3
 
-CODE_IN_DB = False
+SAVE_CODE_IN_DB = False
 
 # Initialize the Selenium WebDriver (e.g., for Chrome)
 options = webdriver.ChromeOptions()
@@ -32,7 +32,7 @@ CREATE TABLE IF NOT EXISTS solutions (
     code_length TEXT,
     code TEXT
 )
-''' if CODE_IN_DB else ''' CREATE TABLE IF NOT EXISTS solutions (
+''' if SAVE_CODE_IN_DB else ''' CREATE TABLE IF NOT EXISTS solutions (
     srno INT,
     prob_srno INT,
     coder_href TEXT,
@@ -87,7 +87,7 @@ for prob in problem_list[:]:
             solu_code = solu_code.text
         except: continue
         else:
-            if CODE_IN_DB: cursor.execute('INSERT INTO solutions \
+            if SAVE_CODE_IN_DB: cursor.execute('INSERT INTO solutions \
                                   (srno, prob_srno, coder_href, rel_href, code_language, code_length, code) \
                                   VALUES (?, ?, ?, ?, ?, ?, ?)',
                                   (solu_srno, prob_srno, prob_href, coder_href, solu_href, solu_code_language, solu_code)

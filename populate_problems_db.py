@@ -11,6 +11,8 @@ from bs4 import BeautifulSoup, element
 
 import sqlite3
 
+PROBLEM_PAGES = 69
+
 # Initialize the Selenium WebDriver (e.g., for Chrome)
 options = webdriver.ChromeOptions()
 options.headless = True  # Run in headless mode if you don't want a visible browser window
@@ -43,7 +45,7 @@ URL = {
     'problems': f'https://leetcode.com/problems'
 }
 
-for i in range(1, 69):
+for i in range(1, PROBLEM_PAGES):
     driver.get(URL['problemset'] + '/?page=' + str(i))
     time.sleep(5)
 
